@@ -13,6 +13,7 @@ from services.gateway.app.schemas.user import LoginUser
 from services.gateway.app.auth.hash import verify_password
 from services.gateway.app.auth.jwt import create_access_token
 from services.gateway.app.auth.dependency import get_current_user
+from services.gateway.app.crud.user import get_user_by_id
 
 
 router = APIRouter(
@@ -76,5 +77,16 @@ def login(user: LoginUser, db: Session = Depends(get_db)):
 @router.get("/me")
 def me(
     current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    return current_user
+
+    user = get_user_by_id(
+        db,
+        current_user["id"],
+    )
+
+    return {
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+    }
