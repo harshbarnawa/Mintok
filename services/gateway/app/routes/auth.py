@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+import os
 from services.gateway.app.database.session import get_db
 from services.gateway.app.schemas.user import RegisterUser
 from services.gateway.app.crud.user import (
@@ -14,6 +14,8 @@ from services.gateway.app.auth.hash import verify_password
 from services.gateway.app.auth.jwt import create_access_token
 from services.gateway.app.auth.dependency import get_current_user
 from services.gateway.app.crud.user import get_user_by_id
+from fastapi import Request
+from services.gateway.app.auth.google import oauth
 
 
 router = APIRouter(
@@ -74,6 +76,22 @@ def login(user: LoginUser, db: Session = Depends(get_db)):
         "access_token": token,
         "token_type": "bearer",
     }
+@router.get("/google")
+async def google_login(request: Request):
+    return await oauth.google.authorize_redirect(
+        request,
+        os.getenv("GOOGLE_REDIRECT_URI"),
+    )
+
+
+@router.get("/google/callback")
+async def google_callback(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+
+    user = token["userinfo"]
+
+    return user
+
 @router.get("/me")
 def me(
     current_user=Depends(get_current_user),
