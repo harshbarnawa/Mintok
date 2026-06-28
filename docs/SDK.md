@@ -104,4 +104,4 @@ utils.ts
 
 The SDK should be extremely lightweight.
 
-All optimization, analytics, routing, token calculation, and AI processing happen on the Mintok Cloud.
+All optimization, analytics, routing, token calculation, and AI processing happen on the Mintok Cloud. 
