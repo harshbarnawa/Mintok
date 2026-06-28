@@ -25,6 +25,19 @@ def create_user(
         hashed_password=hashed_password,
     )
 
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return user
+def create_google_user(db, email: str, username: str):
+    user = User(
+        email=email,
+        username=username,
+        hashed_password=""
+    )
+
     db.add(user)
     db.commit()
     db.refresh(user)

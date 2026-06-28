@@ -16,6 +16,8 @@ from services.gateway.app.auth.dependency import get_current_user
 from services.gateway.app.crud.user import get_user_by_id
 from fastapi import Request
 from services.gateway.app.auth.google import oauth
+from fastapi.responses import RedirectResponse
+from services.gateway.app.crud.user import create_google_user
 
 
 router = APIRouter(
@@ -85,12 +87,38 @@ async def google_login(request: Request):
 
 
 @router.get("/google/callback")
-async def google_callback(request: Request):
+async def google_callback(
+    request: Request,
+    db: Session = Depends(get_db),
+):
     token = await oauth.google.authorize_access_token(request)
 
-    user = token["userinfo"]
+    info = token["userinfo"]
 
-    return user
+    user = get_user_by_email(db, info["email"])
+
+    if not user:
+        user = create_google_user(
+            db,
+            email=info["email"],
+            username=info["given_name"],
+        )
+
+    jwt_token = create_access_token(
+        {
+            "sub": user.email,
+            "id": user.id,
+        }
+    )
+
+    return {
+        "access_token": jwt_token,
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        },
+    }
 
 @router.get("/me")
 def me(
