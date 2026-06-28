@@ -1,0 +1,19 @@
+{
+  "name": "mintok",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "turbo format"
+  },
+  "devDependencies": {
+    "turbo": "^2.10.0",
+    "typescript": "^6.0.3"
+  }
+}
