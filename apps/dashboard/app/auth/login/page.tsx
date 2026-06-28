@@ -8,20 +8,26 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    try {
-      const res = await api.post("/auth/login", {
-        email,
-        password,
-      });
+  try {
+    const res = await api.post("/auth/login", {
+      email,
+      password,
+    });
 
-      alert("Login Success");
+    localStorage.setItem(
+      "access_token",
+      res.data.access_token
+    );
 
-      console.log(res.data);
-    } catch (err) {
-      alert("Login Failed");
-      console.error(err);
-    }
+    alert("Login Success");
+
+    window.location.href = "/dashboard";
+
+  } catch (err) {
+    console.error(err);
+    alert("Login Failed");
   }
+}
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-4">
