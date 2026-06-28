@@ -27,7 +27,7 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          href="/playground"
+          href="/dashboard/playground"
           className="flex items-center gap-3 hover:text-green-400"
         >
           <Play size={20}/>
@@ -57,7 +57,7 @@ export default function Sidebar() {
           <Settings size={20}/>
           Settings
         </Link>
-
+    
       </nav>
     </aside>
   );
